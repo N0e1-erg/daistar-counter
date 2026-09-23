@@ -205,6 +205,20 @@ const ROWS=GROUPS.flatMap(g=>g.rows);
 const KEY="slotCharCounter.v1";
 
 const COLORS={blue:{l:"青",bg:"#3a6fb5",fg:"#fff"},yellow:{l:"黄",bg:"#e3c02a",fg:"#222"},green:{l:"緑",bg:"#3a7a36",fg:"#fff"},red:{l:"赤",bg:"#b8392e",fg:"#fff"},purple:{l:"紫",bg:"#6a3595",fg:"#fff"}};
+const ROWCOL={
+  taiou:["#0f6b63","#fff"],
+  n_fuku:["#b35c00","#fff"],
+  yu5:["#1f5fbf","#fff"],
+  yu10:["#d1342f","#fff"],
+  hazure:["#868b92","#fff"],
+  replay:["#4fc3e8","#0d2b33"],
+  bell:["#f0c419","#3a2e00"],
+  red:["#8e1b2e","#fff"],
+  green:["#2e8b3d","#fff"],
+  purple:["#7b3fa0","#fff"],
+  s_fuku:["#d43f8d","#fff"]
+};
+function labStyle(r){const c=ROWCOL[r.key];return c?` style="background:${c[0]};color:${c[1]}"`:''}
 function variants(row,ci){if(!row.split)return null;return row.split.all||row.split[ci]||null}
 function cellKeys(row,ci){const v=variants(row,ci);return v?v.map(id=>row.key+"_"+id):[row.key]}
 function blankChar(ci){const o={};ROWS.forEach(r=>cellKeys(r,ci).forEach(k=>o[k]=0));return o}
@@ -264,7 +278,7 @@ function buildGrid(){
     g.rows.forEach((r,ri)=>{
       h+='<tr>';
       if(ri===0)h+=`<th class="grp" rowspan="${g.rows.length}">${g.name}</th>`;
-      h+=`<th class="lab">${r.label}</th>`;
+      h+=`<th class="lab"${labStyle(r)}>${r.label}</th>`;
       CHARS.forEach((c,ci)=>{
         if(isNA(r,ci)){h+='<td class="na">－</td>';return}
         const vs=variants(r,ci),nm=r.label.replace('<br>','');
@@ -317,7 +331,7 @@ function histTable(H,numbered,deletable){
   GROUPS.forEach(g=>g.rows.forEach((r,ri)=>{
     h+='<tr>';
     if(ri===0)h+=`<th class="grp stk0" rowspan="${g.rows.length}">${g.name}</th>`;
-    h+=`<th class="lab stk1">${r.label}</th>`;
+    h+=`<th class="lab stk1"${labStyle(r)}>${r.label}</th>`;
     H.forEach(e=>{
       if(isNA(r,e.char)){h+='<td class="na" style="font-size:14px">－</td>';return}
       const vs=variants(r,e.char);
@@ -369,7 +383,7 @@ function buildPtGrid(){
     rows.forEach((r,ri)=>{
       h+='<tr>';
       if(ri===0)h+=`<th class="grp" rowspan="${rows.length}">${g.name}</th>`;
-      h+=`<th class="lab">${r.label}</th>`;
+      h+=`<th class="lab"${labStyle(r)}>${r.label}</th>`;
       CHARS.forEach((c,ci)=>{
         if(isNA(r,ci)){h+='<td class="na">－</td>';return}
         const vs=variants(r,ci);
