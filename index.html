@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ダイスターカウンター">
+<title>ワールドダイスター キャラ別カウンター</title>
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#f3f4f6; --panel:#ffffff; --ink:#1f2328; --sub:#6b7280;
+  --head:#4a4a4a; --head-ink:#fff; --line:#d1d5db; --cell:#fff;
+  --disabled:#d9d9d9; --accent:#5ff3ff; --danger:#c2362b;
+  --c0:#b8392e; --c1:#d19a1f; --c2:#3a7a36; --c3:#3a6fb5; --c4:#6a3595;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#16181c; --panel:#1f2227; --ink:#eceff3; --sub:#9aa1ab;
+    --head:#33363c; --line:#3a3e45; --cell:#2a2d33; --disabled:#3a3d42; --accent:#1fb6c4;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16181c; --panel:#1f2227; --ink:#eceff3; --sub:#9aa1ab;
+  --head:#33363c; --line:#3a3e45; --cell:#2a2d33; --disabled:#3a3d42; --accent:#1fb6c4;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.wrap{max-width:560px;margin:0 auto;padding:10px 8px 40px}
+h2{font-size:17px;margin:14px 0 8px;padding:4px 10px;border-left:6px solid var(--accent);border-bottom:2px solid var(--accent)}
+.mode{display:flex;margin:0 0 8px auto;width:80%;border:2px solid var(--line);border-radius:8px;overflow:hidden;background:var(--cell)}
+.mode button{flex:1;height:48px;border:0;font-size:24px;font-weight:700;background:transparent;color:var(--sub)}
+.mode button.on{background:var(--accent);color:#111}
+body.minus .mode button.on{background:#ff8f8f}
+table{border-collapse:collapse;width:100%;table-layout:fixed}
+.grid th,.grid td{border:1px solid var(--line);padding:3px}
+.grid thead th{color:#fff;font-size:14px;padding:6px 2px;line-height:1.2}
+.grid thead th small{display:block;font-weight:400;font-size:11px;opacity:.85;margin-top:3px}
+.grid .corner{background:var(--head);width:26%}
+.grp{background:var(--head);color:var(--head-ink);writing-mode:vertical-rl;font-size:12px;font-weight:700;width:7%;text-align:center;letter-spacing:2px}
+.lab{background:var(--head);color:var(--head-ink);font-size:13px;font-weight:700;text-align:center;line-height:1.25}
+.cnt{display:block;width:100%;border:2px solid var(--line);border-radius:7px;background:var(--cell);color:var(--ink);
+  text-align:center;font-weight:800;font-size:18px;height:30px;line-height:26px;font-variant-numeric:tabular-nums}
+.btn{display:block;width:100%;margin-top:4px;height:40px;border:0;border-radius:7px;color:#fff;font-size:26px;font-weight:700;line-height:1}
+.btn:active{filter:brightness(.8);transform:scale(.97)}
+.sub{display:flex;align-items:center;gap:3px}
+.sub.gap{margin-top:8px;padding-top:6px;border-top:1px dashed var(--line)}
+.sub .cnt{flex:1;min-width:0;font-size:16px;height:28px;line-height:24px}
+.tag{flex:none;display:inline-block;min-width:18px;padding:1px 3px;border-radius:4px;font-size:11px;font-weight:800;text-align:center;line-height:16px}
+.btn.sm{height:34px;font-size:22px}
+.hv{display:flex;align-items:center;justify-content:center;gap:5px;padding:1px 0}
+.tabs{display:flex;gap:6px;margin:8px 0 4px}
+.tabs button{flex:1;height:42px;border:2px solid var(--line);border-radius:10px;background:var(--cell);color:var(--sub);font-size:15px;font-weight:700}
+.tabs button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.ptrow td{background:#fff7d6;text-align:center}
+.ptrow .ptv{display:block;font-size:19px;font-weight:900;color:#8a5a00;font-variant-numeric:tabular-nums;line-height:1.3}
+.ptrow .lab{background:#8a5a00}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ptrow td{background:#3a3220}:root:not([data-theme="light"]) .ptrow .ptv{color:#ffd36b}}
+.hist .hpt td{background:#fff7d6;color:#8a5a00;font-weight:900}
+.hist .hpt th{background:#8a5a00}
+.ptin{width:100%;height:34px;border:2px solid var(--line);border-radius:7px;background:var(--cell);color:var(--ink);text-align:center;
+  font-size:16px;font-weight:800;-webkit-user-select:text;user-select:text;-webkit-appearance:none;appearance:none;margin:0;padding:0 2px}
+.ptin:focus{outline:none;border-color:var(--accent)}
+.ptsub{display:flex;align-items:center;gap:3px}
+.ptsub+.ptsub{margin-top:6px}
+.ptgrid td{vertical-align:middle}
+.newgame{background:var(--c3);color:#fff}
+.subtabs{display:flex;margin:10px 0 0;border:2px solid var(--line);border-radius:8px;overflow:hidden}
+.subtabs button{flex:1;height:38px;border:0;background:var(--cell);color:var(--sub);font-size:14px;font-weight:700}
+.subtabs button.on{background:var(--accent);color:#111}
+.game{border:1px solid var(--line);border-radius:10px;background:var(--panel);margin-bottom:10px;overflow:hidden}
+.game summary{list-style:none;padding:12px;display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px}
+.game summary::-webkit-details-marker{display:none}
+.gdel{margin-left:auto;border:1px solid var(--danger);color:var(--danger);background:transparent;border-radius:8px;font-size:13px;font-weight:700;padding:7px 14px}
+.gdel:active{background:var(--danger);color:#fff}
+.game summary::after{content:"▼";font-size:11px;color:var(--sub)}
+.game[open] summary::after{content:"▲"}
+.game .meta{font-size:12px;color:var(--sub);font-weight:400}
+.game .body{padding:0 8px 12px}
+.game h3{font-size:14px;margin:12px 2px 6px}
+.gform{display:flex;flex-direction:column;gap:8px;margin:4px 2px 6px}
+.gform label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--sub)}
+.fin{flex:1;min-width:0;height:40px;border:2px solid var(--line);border-radius:8px;background:var(--cell);color:var(--ink);
+  font-size:16px;padding:0 10px;-webkit-user-select:text;user-select:text;font-family:inherit}
+.fin:focus{outline:none;border-color:var(--accent)}
+.na{background:var(--disabled);text-align:center;color:var(--sub);font-size:22px}
+.win{width:100%;height:38px;border:2px solid var(--danger);background:var(--cell);color:var(--danger);border-radius:7px;font-weight:800;font-size:13px}
+.win:active{background:var(--danger);color:#fff}
+.flash{animation:fl .25s}
+@keyframes fl{from{background:#fff59d;color:#111}to{}}
+.ops{display:flex;justify-content:center;gap:10px;margin:14px 0 4px;flex-wrap:wrap}
+.pill{border:0;background:var(--line);color:var(--ink);border-radius:999px;padding:10px 18px;font-size:15px;font-weight:600}
+.pill:disabled{opacity:.4}
+.note{font-size:13px;color:var(--sub);line-height:1.6;margin:0 4px 10px}
+.hscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.hist{width:auto;min-width:100%;table-layout:auto;border-collapse:separate;border-spacing:0;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.hist th,.hist td{border:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center;font-size:13px;padding:6px 8px;white-space:nowrap}
+.hist .lab{white-space:normal;min-width:78px;font-size:12px}
+.hist .grp{padding:4px 2px}
+.hist .stk0{position:sticky;left:0;z-index:2;width:26px;min-width:26px;max-width:26px}
+.hist .stk1{position:sticky;left:26px;z-index:2;width:84px;min-width:84px;max-width:84px;box-shadow:3px 0 4px -2px rgba(0,0,0,.35)}
+.hist .stk2{position:sticky;left:0;z-index:2;width:110px;min-width:110px;max-width:110px;box-shadow:3px 0 4px -2px rgba(0,0,0,.35)}
+.hist td{background:var(--cell);font-variant-numeric:tabular-nums;font-weight:600;min-width:58px}
+.hist thead th{background:var(--head);color:#fff}
+.hist .who{color:#fff;font-size:11px}
+.hist .time{font-size:10px;color:var(--sub);font-weight:400}
+.del{border:1px solid var(--c3);color:var(--c3);background:transparent;border-radius:6px;font-size:11px;padding:3px 8px}
+.empty{padding:22px;text-align:center;color:var(--sub);font-size:14px;border:1px dashed var(--line);border-radius:8px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:10}
+.modal.show{display:flex}
+.dlg{background:var(--panel);color:var(--ink);border-radius:14px;padding:20px 18px 14px;width:100%;max-width:340px;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.dlg p{margin:0 0 16px;font-size:15px;line-height:1.6}
+.dlg .row{display:flex;gap:10px}
+.dlg button{flex:1;height:46px;border-radius:10px;border:0;font-size:16px;font-weight:700}
+.dlg .no{background:var(--line);color:var(--ink)}
+.dlg .yes{background:var(--danger);color:#fff}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);
+  background:#222;color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:.92}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 style="font-size:18px;margin:6px 4px 4px">ワールドダイスター キャラ別カウンター</h1>
+  <div class="tabs" role="tablist">
+    <button id="tabCount" class="on" role="tab">カウンター</button>
+    <button id="tabSet" role="tab">⚙ 設定</button>
+  </div>
+  <div id="viewCount">
+  <h2>キャラ別カウント</h2>
+  <div class="mode" role="group" aria-label="カウントモード">
+    <button id="mPlus" class="on" aria-pressed="true">＋</button>
+    <button id="mMinus" aria-pressed="false">－</button>
+  </div>
+  <table class="grid" id="grid"></table>
+  <div class="ops">
+    <button class="pill" id="undo">戻す</button>
+    <button class="pill" id="redo">進む</button>
+    <button class="pill" id="reset">有利切れ(全リセット)</button>
+  </div>
+
+  <h2>CZ当選履歴</h2>
+  <p class="note">「当選」を押した時点の回数を記録し、そのキャラのカウントを0に戻します。新しい当選が左に追加されます。</p>
+  <div id="histBox"></div>
+  <div class="ops"><button class="pill newgame" id="newGame">新規ゲーム開始</button></div>
+  </div>
+  <div id="viewSet" hidden>
+    <div class="subtabs">
+      <button id="subPt" class="on">pt設定</button>
+      <button id="subPast">過去のゲーム</button>
+    </div>
+    <div id="paneSet">
+    <h2>pt設定</h2>
+    <p class="note">1カウントあたりのptを自由に変更できます。変更はすぐに推定pt合計へ反映され、自動で保存されます。しりうす湯の5G・10G当選はpt計算の対象外です。</p>
+    <table class="grid ptgrid" id="ptGrid"></table>
+    <div class="ops"><button class="pill" id="ptDefault">初期値に戻す</button></div>
+    </div>
+    <div id="panePast" hidden>
+      <h2>過去のゲーム</h2>
+      <p class="note">「新規ゲーム開始」を押す前のカウンターと当選履歴が保存されています。タップすると中身を確認できます。</p>
+      <div class="ops">
+        <button class="pill" id="impBtn">ゲームをインポート</button>
+        <input type="file" id="impFile" accept=".json,application/json" hidden>
+      </div>
+      <div id="pastBox"></div>
+      <div class="ops"><button class="pill" id="clearPast">過去のゲームを全削除</button></div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true"><div class="dlg"><p id="mMsg"></p>
+<div class="row"><button class="no" id="mNo">キャンセル</button><button class="yes" id="mYes">OK</button></div></div></div>
+
+<script>
+const CHARS=[
+  {name:"ここな",sub:"赤チャ"},
+  {name:"カトリナ",sub:"ベル"},
+  {name:"流石",sub:"緑チャ"},
+  {name:"ぱんだ",sub:"リプ"},
+  {name:"八恵",sub:"紫チャ"}
+];
+const GROUPS=[
+  {name:"通常時",rows:[
+    {key:"taiou",label:"対応役"},
+    {key:"n_fuku",label:"複合<br>チャンス目",disabled:[1,3]}
+  ]},
+  {name:"しりうす湯",rows:[
+    {key:"yu5",label:"5G<br>当選"},
+    {key:"yu10",label:"10G<br>当選"},
+    {key:"hazure",label:"ハズレ",split:{all:["blue","yellow"]}},
+    {key:"replay",label:"リプレイ",split:{3:["yellow","green"]}},
+    {key:"bell",label:"ベル",split:{1:["yellow","green"]}},
+    {key:"red",label:"赤<br>チャンス目",split:{0:["red","purple"]}},
+    {key:"green",label:"緑<br>チャンス目",split:{2:["red","purple"]}},
+    {key:"purple",label:"紫<br>チャンス目"},
+    {key:"s_fuku",label:"複合<br>チャンス目"}
+  ]}
+];
+const ROWS=GROUPS.flatMap(g=>g.rows);
+const KEY="slotCharCounter.v1";
+
+const COLORS={blue:{l:"青",bg:"#3a6fb5",fg:"#fff"},yellow:{l:"黄",bg:"#e3c02a",fg:"#222"},green:{l:"緑",bg:"#3a7a36",fg:"#fff"},red:{l:"赤",bg:"#b8392e",fg:"#fff"},purple:{l:"紫",bg:"#6a3595",fg:"#fff"}};
+function variants(row,ci){if(!row.split)return null;return row.split.all||row.split[ci]||null}
+function cellKeys(row,ci){const v=variants(row,ci);return v?v.map(id=>row.key+"_"+id):[row.key]}
+function blankChar(ci){const o={};ROWS.forEach(r=>cellKeys(r,ci).forEach(k=>o[k]=0));return o}
+function blankCounts(){return CHARS.map((_,ci)=>blankChar(ci))}
+const PT_KEY="slotCharCounter.points.v1";
+const NO_PT=["yu5","yu10"];
+function defaultPt(key,ci){
+  const map={
+    taiou:1,n_fuku:2,
+    hazure_blue:0,hazure_yellow:1,
+    replay:1,replay_yellow:2,replay_green:3,
+    bell:1,bell_yellow:2,bell_green:3,
+    red:2,red_red:3,red_purple:4,
+    green:2,green_red:3,green_purple:4,
+    purple:ci===4?4:2,
+    s_fuku:4
+  };
+  return map[key]??0;
+}
+function defaultPoints(){return CHARS.map((_,ci)=>{const o={};ROWS.forEach(r=>{if(NO_PT.includes(r.key)||isNA(r,ci))return;cellKeys(r,ci).forEach(k=>o[k]=defaultPt(k,ci))});return o})}
+function ptOf(ci,k){const v=points[ci]&&points[ci][k];return typeof v==='number'&&isFinite(v)?v:defaultPt(k,ci)}
+function calcPt(ci,counts){let t=0;ROWS.forEach(r=>{if(NO_PT.includes(r.key)||isNA(r,ci))return;cellKeys(r,ci).forEach(k=>t+=(counts[k]||0)*ptOf(ci,k))});return t}
+function fmt(n){return Math.round(n*100)/100}
+function tag(id){const c=COLORS[id];return `<span class="tag" style="background:${c.bg};color:${c.fg}">${c.l}</span>`}
+function isNA(row,ci){return row.disabled&&row.disabled.includes(ci)}
+
+let state={counts:blankCounts(),history:[]};
+let points=defaultPoints();
+try{const p=JSON.parse(localStorage.getItem(PT_KEY));if(Array.isArray(p))p.forEach((o,ci)=>Object.assign(points[ci],o))}catch(e){}
+if(!Array.isArray(state.archives))state.archives=[];
+state.archives.forEach(g=>{if(g.date===undefined){const m=String(g.time||'').match(/^(\d+)\/(\d+)/);g.date=m?`${new Date().getFullYear()}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}`:''}if(g.store===undefined)g.store='';if(!g.id)g.id=newId()});
+function savePoints(){try{localStorage.setItem(PT_KEY,JSON.stringify(points))}catch(e){}}
+let mode=1;
+let past=[],future=[];
+
+try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.counts&&s.history)state=s}catch(e){}
+state.counts.forEach((c,ci)=>ROWS.forEach(r=>cellKeys(r,ci).forEach(k=>{if(typeof c[k]!=='number')c[k]=0})));
+if(!Array.isArray(state.archives))state.archives=[];
+state.archives.forEach(g=>{if(g.date===undefined){const m=String(g.time||'').match(/^(\d+)\/(\d+)/);g.date=m?`${new Date().getFullYear()}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}`:''}if(g.store===undefined)g.store='';if(!g.id)g.id=newId()});
+
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+function snap(){return JSON.stringify(state)}
+function commit(fn){
+  past.push(snap());if(past.length>200)past.shift();
+  future=[];fn();save();render();
+}
+
+const $=id=>document.getElementById(id);
+
+function buildGrid(){
+  let h='<thead><tr><th class="corner" colspan="2" style="color:#fff">キャラ</th>';
+  CHARS.forEach((c,i)=>h+=`<th style="background:var(--c${i})">${c.name}<small>${c.sub}</small></th>`);
+  h+='</tr></thead><tbody><tr class="ptrow"><th class="lab" colspan="2">推定pt<br>合計</th>';
+  CHARS.forEach((c,ci)=>h+=`<td><span class="ptv" id="pt-${ci}">0</span></td>`);
+  h+='</tr>';
+  GROUPS.forEach(g=>{
+    g.rows.forEach((r,ri)=>{
+      h+='<tr>';
+      if(ri===0)h+=`<th class="grp" rowspan="${g.rows.length}">${g.name}</th>`;
+      h+=`<th class="lab">${r.label}</th>`;
+      CHARS.forEach((c,ci)=>{
+        if(isNA(r,ci)){h+='<td class="na">－</td>';return}
+        const vs=variants(r,ci),nm=r.label.replace('<br>','');
+        if(!vs){
+          h+=`<td><span class="cnt" id="v-${ci}-${r.key}">0</span>
+            <button class="btn" data-c="${ci}" data-r="${r.key}" style="background:var(--c${ci})" aria-label="${c.name} ${nm}">＋</button></td>`;
+        }else{
+          h+='<td>'+vs.map((id,vi)=>{const k=r.key+'_'+id;
+            return `<div class="sub${vi?' gap':''}">${tag(id)}<span class="cnt" id="v-${ci}-${k}">0</span></div>
+            <button class="btn sm" data-c="${ci}" data-r="${k}" style="background:var(--c${ci})" aria-label="${c.name} ${nm} ${COLORS[id].l}">＋</button>`}).join('')+'</td>';
+        }
+      });
+      h+='</tr>';
+    });
+  });
+  h+='<tr><th class="lab" colspan="2">CZ当選</th>';
+  CHARS.forEach((c,ci)=>h+=`<td><button class="win" data-win="${ci}">当選</button></td>`);
+  h+='</tr></tbody>';
+  $('grid').innerHTML=h;
+}
+
+function render(){
+  CHARS.forEach((c,ci)=>ROWS.forEach(r=>cellKeys(r,ci).forEach(k=>{
+    const el=$(`v-${ci}-${k}`);if(el)el.textContent=state.counts[ci][k];
+  })));
+  CHARS.forEach((c,ci)=>$(`pt-${ci}`).textContent=fmt(calcPt(ci,state.counts[ci])));
+  document.querySelectorAll('.btn').forEach(b=>b.textContent=mode>0?'＋':'－');
+  $('mPlus').classList.toggle('on',mode>0);$('mMinus').classList.toggle('on',mode<0);
+  $('mPlus').setAttribute('aria-pressed',mode>0);$('mMinus').setAttribute('aria-pressed',mode<0);
+  document.body.classList.toggle('minus',mode<0);
+  $('undo').disabled=!past.length;$('redo').disabled=!future.length;
+  renderHist();renderPast();
+}
+
+function renderHist(){
+  const H=state.history;
+  if(!H.length){$('histBox').innerHTML='<div class="empty">まだ当選履歴はありません。カウント後に「当選」を押すとここに記録されます。</div>';return}
+  $('histBox').innerHTML=histTable(H,true,true);
+}
+function histTable(H,numbered,deletable){
+  const n=H.length;
+  let h='<div class="hscroll"><table class="hist"><thead>';
+  if(numbered){h+='<tr><th class="stk2" colspan="2"></th>';
+  H.forEach((e,i)=>h+=`<th>${n-i}回目<div class="time">${e.time||''}</div></th>`);h+='</tr>';}
+  h+='<tr><th class="stk2" colspan="2">キャラ</th>';
+  H.forEach(e=>h+=`<th class="who" style="background:var(--c${e.char})">${CHARS[e.char].name}</th>`);
+  h+='</tr></thead><tbody><tr class="hpt"><th class="lab stk2" colspan="2">推定pt合計</th>';
+  H.forEach(e=>h+=`<td>${e.pt??fmt(calcPt(e.char,e.counts))}</td>`);
+  h+='</tr>';
+  GROUPS.forEach(g=>g.rows.forEach((r,ri)=>{
+    h+='<tr>';
+    if(ri===0)h+=`<th class="grp stk0" rowspan="${g.rows.length}">${g.name}</th>`;
+    h+=`<th class="lab stk1">${r.label}</th>`;
+    H.forEach(e=>{
+      if(isNA(r,e.char)){h+='<td class="na" style="font-size:14px">－</td>';return}
+      const vs=variants(r,e.char);
+      if(vs&&vs.some(id=>(r.key+'_'+id) in e.counts)){
+        h+='<td>'+vs.map(id=>`<div class="hv">${tag(id)}${e.counts[r.key+'_'+id]??0}</div>`).join('')+'</td>';
+      }else h+=`<td>${e.counts[r.key]??0}</td>`;
+    });
+    h+='</tr>';
+  }));
+  if(deletable){
+  h+='<tr><th class="stk2" colspan="2" style="border:0;background:var(--bg);box-shadow:none"></th>';
+  H.forEach((e,i)=>h+=`<td style="border:0;background:transparent"><button class="del" data-del="${i}">削除</button></td>`);
+  h+='</tr>';}
+  h+='</tbody></table></div>';
+  return h;
+}
+function newId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function esc(t){return String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function isoToday(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function gameTitle(g){
+  let d=g.time;
+  if(g.date){const [y,m,dd]=g.date.split('-');d=`${y}/${+m}/${+dd}`}
+  return esc(d)+(g.store?`　${esc(g.store)}`:'');
+}
+function renderPast(){
+  const A=state.archives||[];
+  $('clearPast').disabled=!A.length;
+  if(!A.length){$('pastBox').innerHTML='<div class="empty">保存された過去のゲームはありません。</div>';return}
+  $('pastBox').innerHTML=A.map((g,i)=>{
+    const fin=g.counts.map((c,ci)=>({char:ci,counts:c,pt:g.pts?g.pts[ci]:fmt(calcPt(ci,c))}));
+    return `<details class="game"><summary><span><span id="gt-${i}">${gameTitle(g)}</span><span class="meta" style="display:block">CZ当選 ${g.history.length}回・保存 ${g.time}</span></span><button class="gdel" data-delgame="${i}">削除</button></summary><div class="body">
+      <div class="gform">
+        <label>日付<input class="fin" type="date" data-gi="${i}" data-f="date" value="${g.date||''}"></label>
+        <label>店名<input class="fin" type="text" data-gi="${i}" data-f="store" value="${esc(g.store||'')}" placeholder="店名を入力"></label>
+      </div>
+      <div class="ops" style="margin:6px 0"><button class="pill" data-expgame="${i}">このゲームをエクスポート</button></div>
+      <h3>終了時のカウンター</h3>${histTable(fin,false,false)}
+      <h3>CZ当選履歴</h3>${g.history.length?histTable(g.history,true,false):'<div class="empty">当選なし</div>'}
+</div></details>`;
+  }).join('');
+}
+
+function buildPtGrid(){
+  let h='<thead><tr><th class="corner" colspan="2" style="color:#fff">キャラ</th>';
+  CHARS.forEach((c,i)=>h+=`<th style="background:var(--c${i})">${c.name}<small>${c.sub}</small></th>`);
+  h+='</tr></thead><tbody>';
+  GROUPS.forEach(g=>{
+    const rows=g.rows.filter(r=>!NO_PT.includes(r.key));
+    rows.forEach((r,ri)=>{
+      h+='<tr>';
+      if(ri===0)h+=`<th class="grp" rowspan="${rows.length}">${g.name}</th>`;
+      h+=`<th class="lab">${r.label}</th>`;
+      CHARS.forEach((c,ci)=>{
+        if(isNA(r,ci)){h+='<td class="na">－</td>';return}
+        const vs=variants(r,ci);
+        const inp=k=>`<input class="ptin" type="text" inputmode="decimal" data-c="${ci}" data-k="${k}" value="${ptOf(ci,k)}">`;
+        if(!vs)h+=`<td>${inp(r.key)}</td>`;
+        else h+='<td>'+vs.map(id=>`<div class="ptsub">${tag(id)}${inp(r.key+'_'+id)}</div>`).join('')+'</td>';
+      });
+      h+='</tr>';
+    });
+  });
+  h+='</tbody>';
+  $('ptGrid').innerHTML=h;
+}
+$('ptGrid').addEventListener('input',e=>{
+  const t=e.target.closest('.ptin');if(!t)return;
+  const v=parseFloat(t.value);
+  if(t.value.trim()===''||!isFinite(v))return;
+  points[+t.dataset.c][t.dataset.k]=v;savePoints();render();
+});
+$('ptGrid').addEventListener('change',e=>{
+  const t=e.target.closest('.ptin');if(!t)return;
+  t.value=ptOf(+t.dataset.c,t.dataset.k);
+});
+$('ptGrid').addEventListener('focusin',e=>{const t=e.target.closest('.ptin');if(t)setTimeout(()=>t.select(),0)});
+$('ptDefault').onclick=async()=>{
+  if(!await ask('pt設定をすべて初期値に戻しますか？','戻す'))return;
+  points=defaultPoints();savePoints();buildPtGrid();render();toast('初期値に戻しました');
+};
+function showTab(set){
+  $('viewCount').hidden=set;$('viewSet').hidden=!set;
+  $('tabCount').classList.toggle('on',!set);$('tabSet').classList.toggle('on',set);
+  window.scrollTo(0,0);
+}
+$('tabCount').onclick=()=>showTab(false);
+$('tabSet').onclick=()=>showTab(true);
+
+function ask(msg,ok='OK'){
+  return new Promise(res=>{
+    $('mMsg').textContent=msg;$('mYes').textContent=ok;$('modal').classList.add('show');
+    const done=v=>{$('modal').classList.remove('show');$('mYes').onclick=$('mNo').onclick=null;res(v)};
+    $('mYes').onclick=()=>done(true);$('mNo').onclick=()=>done(false);
+  });
+}
+let tt;function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1400)}
+function nowStr(){const d=new Date();return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`}
+
+$('grid').addEventListener('click',async e=>{
+  const b=e.target.closest('.btn');
+  if(b){
+    const ci=+b.dataset.c,k=b.dataset.r;
+    const cur=state.counts[ci][k];
+    if(mode<0&&cur===0){toast('0より下にはできません');return}
+    commit(()=>state.counts[ci][k]=cur+mode);
+    const v=$(`v-${ci}-${k}`);v.classList.remove('flash');void v.offsetWidth;v.classList.add('flash');
+    return;
+  }
+  const w=e.target.closest('.win');
+  if(w){
+    const ci=+w.dataset.win;
+    if(!await ask(`${CHARS[ci].name}のCZ当選を記録して、${CHARS[ci].name}のカウントを0に戻しますか？`,'記録する'))return;
+    commit(()=>{
+      state.history.unshift({char:ci,counts:{...state.counts[ci]},pt:fmt(calcPt(ci,state.counts[ci])),time:nowStr()});
+      state.counts[ci]=blankChar(ci);
+    });
+    toast(`${CHARS[ci].name}の当選を記録しました`);
+  }
+});
+$('histBox').addEventListener('click',async e=>{
+  const d=e.target.closest('.del');if(!d)return;
+  const i=+d.dataset.del;
+  if(!await ask(`${state.history.length-i}回目の履歴を削除しますか？`,'削除する'))return;
+  commit(()=>state.history.splice(i,1));
+});
+$('mPlus').onclick=()=>{mode=1;render()};
+$('mMinus').onclick=()=>{mode=-1;render()};
+$('undo').onclick=()=>{if(!past.length)return;future.push(snap());state=JSON.parse(past.pop());save();render();toast('1つ戻しました')};
+$('redo').onclick=()=>{if(!future.length)return;past.push(snap());state=JSON.parse(future.pop());save();render();toast('1つ進めました')};
+$('reset').onclick=async()=>{if(!await ask('全キャラのカウントを0にしますか？（履歴は残ります）','リセット'))return;commit(()=>state.counts=blankCounts());toast('カウントをリセットしました')};
+$('newGame').onclick=async()=>{
+  const empty=!state.history.length&&state.counts.every(c=>Object.values(c).every(v=>!v));
+  if(!await ask(empty?'新しいゲームを開始しますか？（記録がないため保存はされません）':'今のカウンターと当選履歴を「過去のゲーム」に保存して、すべて0から新しいゲームを開始しますか？','開始する'))return;
+  commit(()=>{
+    if(!empty)state.archives.unshift({id:newId(),time:nowStr(),date:isoToday(),store:'',counts:state.counts,pts:state.counts.map((c,ci)=>fmt(calcPt(ci,c))),history:state.history});
+    state.counts=blankCounts();state.history=[];
+  });
+  toast(empty?'新しいゲームを開始しました':'過去のゲームに保存しました');
+};
+$('pastBox').addEventListener('click',async e=>{
+  const x=e.target.closest('[data-expgame]');
+  if(x){const g=state.archives[+x.dataset.expgame];if(g)exportGame(g);return}
+  const d=e.target.closest('[data-delgame]');if(!d)return;
+  e.preventDefault();e.stopPropagation();
+  const i=+d.dataset.delgame;
+  if(!await ask(`${state.archives[i].time} のゲームを削除しますか？`,'削除する'))return;
+  commit(()=>state.archives.splice(i,1));toast('削除しました');
+});
+$('pastBox').addEventListener('input',e=>{
+  const t=e.target.closest('.fin');if(!t)return;
+  const g=state.archives[+t.dataset.gi];if(!g)return;
+  g[t.dataset.f]=t.value;save();
+  $('gt-'+t.dataset.gi).innerHTML=gameTitle(g);
+});
+let dlNS;
+if(window.claude&&typeof window.claude.use==='function'){window.claude.use('downloads').then(ns=>dlNS=ns).catch(()=>{})}
+async function exportGame(g){
+  const date=g.date||'nodate';
+  const store=(g.store||'').replace(/[\\/:*?"<>|\s]+/g,'_').slice(0,40);
+  const filename=`daistar-${date}${store?'-'+store:''}.json`;
+  const data=JSON.stringify({app:"worlddaistar-char-counter",version:2,exportedAt:new Date().toISOString(),game:g},null,1);
+  if(dlNS){
+    try{await dlNS.save({filename,data});toast('エクスポートしました')}
+    catch(err){if(err&&err.code==='declined')return;toast('エクスポートできませんでした')}
+    return;
+  }
+  try{
+    const url=URL.createObjectURL(new Blob([data],{type:'application/json'}));
+    const el=document.createElement('a');el.href=url;el.download=filename;document.body.appendChild(el);el.click();el.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),3000);
+  }catch(e){toast('エクスポートできませんでした')}
+}
+$('impBtn').onclick=()=>{$('impFile').value='';$('impFile').click()};
+function validGame(g){return g&&Array.isArray(g.counts)&&g.counts.length===CHARS.length&&Array.isArray(g.history)}
+$('impFile').onchange=async e=>{
+  const f=e.target.files&&e.target.files[0];if(!f)return;
+  let obj;
+  try{obj=JSON.parse(await f.text())}catch(err){toast('ファイルを読み込めませんでした');return}
+  const list=obj&&obj.game?[obj.game]:(Array.isArray(obj)?obj:obj&&obj.archives);
+  if(!Array.isArray(list)){toast('このアプリのデータではありません');return}
+  const games=list.filter(validGame);
+  if(!games.length){toast('読み込めるゲームがありません');return}
+  const have=new Set(state.archives.map(g=>g.id));
+  const add=games.filter(g=>!g.id||!have.has(g.id));
+  const dup=games.length-add.length;
+  if(!add.length){toast('このゲームは取り込み済みです');return}
+  const g0=add[0];
+  const label=add.length===1?`「${gameTitle(g0).replace(/&amp;/g,'&')}」`:`${add.length}件のゲーム`;
+  if(!await ask(`${label}を過去のゲームに追加しますか？`+(dup?`（重複${dup}件はスキップ）`:''),'追加する'))return;
+  commit(()=>{
+    add.forEach(g=>{
+      g.id=g.id||newId();g.store=g.store||'';g.date=g.date||'';g.time=g.time||'';
+      g.counts=g.counts.map((c,ci)=>{const o=blankChar(ci);Object.assign(o,c);return o});
+      state.archives.push(g);
+    });
+    state.archives.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  });
+  toast(add.length===1?'追加しました':`${add.length}件を追加しました`);
+};
+$('clearPast').onclick=async()=>{if(!state.archives.length)return;if(!await ask('過去のゲームをすべて削除しますか？','削除する'))return;commit(()=>state.archives=[]);toast('削除しました')};
+function showSub(past){
+  $('paneSet').hidden=past;$('panePast').hidden=!past;
+  $('subPt').classList.toggle('on',!past);$('subPast').classList.toggle('on',past);
+}
+$('subPt').onclick=()=>showSub(false);
+$('subPast').onclick=()=>showSub(true);
+
+buildGrid();buildPtGrid();render();
+</script>
+</body>
+</html>
