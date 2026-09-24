@@ -39,8 +39,8 @@ h2{font-size:17px;margin:14px 0 8px;padding:4px 10px;border-left:6px solid var(-
 body.minus .mode button.on{background:#ff8f8f}
 table{border-collapse:collapse;width:100%;table-layout:fixed}
 .grid th,.grid td{border:1px solid var(--line);padding:3px}
-.grid thead th{color:#fff;font-size:14px;padding:6px 2px;line-height:1.2}
-.grid thead th small{display:block;font-weight:400;font-size:11px;opacity:.85;margin-top:3px}
+.grid thead th{color:#fff;font-size:12px;padding:5px 1px;line-height:1.25}
+.grid thead th small{display:block;font-weight:400;font-size:10px;opacity:.85;margin-top:3px}
 .grid .corner{background:var(--head);width:26%}
 .grp{background:var(--head);color:var(--head-ink);writing-mode:vertical-rl;font-size:12px;font-weight:700;width:7%;text-align:center;letter-spacing:2px}
 .lab{background:var(--head);color:var(--head-ink);font-size:13px;font-weight:700;text-align:center;line-height:1.25}
@@ -51,11 +51,22 @@ table{border-collapse:collapse;width:100%;table-layout:fixed}
 .sub{display:flex;align-items:center;gap:3px}
 .sub.gap{margin-top:8px;padding-top:6px;border-top:1px dashed var(--line)}
 .sub .cnt{flex:1;min-width:0;font-size:16px;height:28px;line-height:24px}
-.tag{flex:none;display:inline-block;min-width:18px;padding:1px 3px;border-radius:4px;font-size:11px;font-weight:800;text-align:center;line-height:16px}
+.tag{flex:none;display:inline-block;min-width:18px;padding:1px 3px;border-radius:4px;font-size:10px;font-weight:800;text-align:center;line-height:16px}
 .btn.sm{height:34px;font-size:22px}
 .hv{display:flex;align-items:center;justify-content:center;gap:5px;padding:1px 0}
 .tabs{display:flex;gap:6px;margin:8px 0 4px}
-.tabs button{flex:1;height:42px;border:2px solid var(--line);border-radius:10px;background:var(--cell);color:var(--sub);font-size:15px;font-weight:700}
+.tabs{gap:4px}
+.tabs button{flex:1;height:42px;border:2px solid var(--line);border-radius:10px;background:var(--cell);color:var(--sub);font-size:13px;font-weight:700;padding:0 2px}
+.mrow{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:8px}
+.mrow .mname{flex:1;min-width:0;font-size:14px;font-weight:700}
+.mrow .mval{min-width:62px;text-align:center;font-size:22px;font-weight:900;font-variant-numeric:tabular-nums}
+.mrow .mbtn{width:46px;height:44px;border:0;border-radius:8px;background:var(--c3);color:#fff;font-size:24px;font-weight:700;line-height:1}
+.mrow .mbtn.minus{background:var(--sub)}
+.mrow .mbtn:active{filter:brightness(.8)}
+.mrow .mrst{border:1px solid var(--line);background:transparent;color:var(--sub);border-radius:8px;height:44px;padding:0 10px;font-size:12px;font-weight:700}
+.mrow .gin{width:110px;height:44px;border:2px solid var(--line);border-radius:8px;background:var(--cell);color:var(--ink);
+  font-size:20px;font-weight:800;text-align:center;-webkit-user-select:text;user-select:text;font-family:inherit}
+.mrow .gin:focus{outline:none;border-color:var(--accent)}
 .tabs button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .ptrow td{background:#fff7d6;text-align:center}
 .ptrow .ptv{display:block;font-size:19px;font-weight:900;color:#8a5a00;font-variant-numeric:tabular-nums;line-height:1.3}
@@ -83,11 +94,16 @@ table{border-collapse:collapse;width:100%;table-layout:fixed}
 .game .meta{font-size:12px;color:var(--sub);font-weight:400}
 .game .body{padding:0 8px 12px}
 .game h3{font-size:14px;margin:12px 2px 6px}
+.mtbl{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin:0 2px 8px;font-size:13px}
+.mtbl div{display:flex;justify-content:space-between;border-bottom:1px dotted var(--line);padding:3px 0}
 .gform{display:flex;flex-direction:column;gap:8px;margin:4px 2px 6px}
 .gform label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--sub)}
 .fin{flex:1;min-width:0;height:40px;border:2px solid var(--line);border-radius:8px;background:var(--cell);color:var(--ink);
   font-size:16px;padding:0 10px;-webkit-user-select:text;user-select:text;font-family:inherit}
 .fin:focus{outline:none;border-color:var(--accent)}
+.ghead th{background:var(--head);color:#fff;font-size:13px;font-weight:700;text-align:left;padding:8px 10px;border:1px solid var(--line)}
+.ghead.closed th{background:#5c6068}
+.gar{display:inline-block;width:16px;font-size:10px}
 .na{background:var(--disabled);text-align:center;color:var(--sub);font-size:22px}
 .win{width:100%;height:38px;border:2px solid var(--danger);background:var(--cell);color:var(--danger);border-radius:7px;font-weight:800;font-size:13px}
 .win:active{background:var(--danger);color:#fff}
@@ -107,7 +123,7 @@ table{border-collapse:collapse;width:100%;table-layout:fixed}
 .hist .stk2{position:sticky;left:0;z-index:2;width:110px;min-width:110px;max-width:110px;box-shadow:3px 0 4px -2px rgba(0,0,0,.35)}
 .hist td{background:var(--cell);font-variant-numeric:tabular-nums;font-weight:600;min-width:58px}
 .hist thead th{background:var(--head);color:#fff}
-.hist .who{color:#fff;font-size:11px}
+.hist .who{color:#fff;font-size:11px;line-height:1.25}
 .hist .time{font-size:10px;color:var(--sub);font-weight:400}
 .del{border:1px solid var(--c3);color:var(--c3);background:transparent;border-radius:6px;font-size:11px;padding:3px 8px}
 .empty{padding:22px;text-align:center;color:var(--sub);font-size:14px;border:1px dashed var(--line);border-radius:8px}
@@ -129,6 +145,8 @@ table{border-collapse:collapse;width:100%;table-layout:fixed}
   <h1 style="font-size:18px;margin:6px 4px 4px">ワールドダイスター キャラ別カウンター</h1>
   <div class="tabs" role="tablist">
     <button id="tabCount" class="on" role="tab">カウンター</button>
+    <button id="tabHist" role="tab">履歴</button>
+    <button id="tabMisc" role="tab">その他</button>
     <button id="tabSet" role="tab">⚙ 設定</button>
   </div>
   <div id="viewCount">
@@ -144,10 +162,17 @@ table{border-collapse:collapse;width:100%;table-layout:fixed}
     <button class="pill" id="reset">有利切れ(全リセット)</button>
   </div>
 
+  </div>
+  <div id="viewHist" hidden>
   <h2>CZ当選履歴</h2>
   <p class="note">「当選」を押した時点の回数を記録し、そのキャラのカウントを0に戻します。新しい当選が左に追加されます。</p>
   <div id="histBox"></div>
   <div class="ops"><button class="pill newgame" id="newGame">新規ゲーム開始</button></div>
+  </div>
+  <div id="viewMisc" hidden>
+    <h2>その他カウンター</h2>
+    <p class="note">新規ゲーム開始でのみ0に戻ります。「有利切れ(全リセット)」の影響は受けません。各項目の右端のボタンで、その項目だけをリセットできます。</p>
+    <div id="miscBox"></div>
   </div>
   <div id="viewSet" hidden>
     <div class="subtabs">
@@ -178,23 +203,25 @@ table{border-collapse:collapse;width:100%;table-layout:fixed}
 
 <script>
 const CHARS=[
-  {name:"ここな",sub:"赤チャ"},
-  {name:"カトリナ",sub:"ベル"},
-  {name:"流石",sub:"緑チャ"},
-  {name:"ぱんだ",sub:"リプ"},
-  {name:"八恵",sub:"紫チャ"}
+  {name:"ここな",n2:"美兎",sub:"赤チャ"},
+  {name:"カトリナ",n2:"叶羽",sub:"ベル"},
+  {name:"流石",n2:"蕾",sub:"緑チャ"},
+  {name:"ぱんだ",n2:"カミラ",sub:"リプ"},
+  {name:"八恵",n2:"いろは",sub:"紫チャ"}
 ];
+const dsp=c=>`${c.name}<br>${c.n2}`;
+const full=ci=>`${CHARS[ci].name}・${CHARS[ci].n2}`;
 const GROUPS=[
-  {name:"通常時",rows:[
-    {key:"taiou",label:"対応役"},
+  {name:"通常時",gid:"normal",rows:[
+    {key:"taiou",label:"対応役",split:{all:["nolight","light"]}},
     {key:"n_fuku",label:"複合<br>チャンス目",disabled:[1,3]}
   ]},
-  {name:"しりうす湯",rows:[
+  {name:"しりうす湯",gid:"yu",rows:[
     {key:"yu5",label:"5G<br>当選"},
     {key:"yu10",label:"10G<br>当選"},
-    {key:"hazure",label:"ハズレ",split:{all:["blue","yellow"]}},
-    {key:"replay",label:"リプレイ",split:{3:["yellow","green"]}},
-    {key:"bell",label:"ベル",split:{1:["yellow","green"]}},
+    {key:"hazure",label:"ハズレ",split:{all:["b_off","b_on","y_std","y_last"]}},
+    {key:"replay",label:"リプレイ",split:{3:["green","red"]}},
+    {key:"bell",label:"ベル",split:{1:["green","red"]}},
     {key:"red",label:"赤<br>チャンス目",split:{0:["red","purple"]}},
     {key:"green",label:"緑<br>チャンス目",split:{2:["red","purple"]}},
     {key:"purple",label:"紫<br>チャンス目"},
@@ -204,7 +231,7 @@ const GROUPS=[
 const ROWS=GROUPS.flatMap(g=>g.rows);
 const KEY="slotCharCounter.v1";
 
-const COLORS={blue:{l:"青",bg:"#3a6fb5",fg:"#fff"},yellow:{l:"黄",bg:"#e3c02a",fg:"#222"},green:{l:"緑",bg:"#3a7a36",fg:"#fff"},red:{l:"赤",bg:"#b8392e",fg:"#fff"},purple:{l:"紫",bg:"#6a3595",fg:"#fff"}};
+const COLORS={blue:{l:"青",bg:"#3a6fb5",fg:"#fff"},yellow:{l:"黄",bg:"#e3c02a",fg:"#222"},green:{l:"緑",bg:"#3a7a36",fg:"#fff"},red:{l:"赤",bg:"#b8392e",fg:"#fff"},purple:{l:"紫",bg:"#6a3595",fg:"#fff"},b_off:{l:"青非",bg:"#3a6fb5",fg:"#fff"},b_on:{l:"青発",bg:"#17a2e0",fg:"#03212e"},y_std:{l:"黄",bg:"#e3c02a",fg:"#222"},y_last:{l:"黄L",bg:"#ef8b1c",fg:"#2b1500"},nolight:{l:"非",bg:"#6b7280",fg:"#fff"},light:{l:"発",bg:"#ffb300",fg:"#3a2e00"}};
 const ROWCOL={
   taiou:["#0f6b63","#fff"],
   n_fuku:["#b35c00","#fff"],
@@ -227,10 +254,10 @@ const PT_KEY="slotCharCounter.points.v1";
 const NO_PT=["yu5","yu10"];
 function defaultPt(key,ci){
   const map={
-    taiou:1,n_fuku:2,
-    hazure_blue:0,hazure_yellow:1,
-    replay:1,replay_yellow:2,replay_green:3,
-    bell:1,bell_yellow:2,bell_green:3,
+    taiou:1,taiou_nolight:1,taiou_light:2,n_fuku:2,
+    hazure_blue:0,hazure_yellow:1,hazure_b_off:0,hazure_b_on:1,hazure_y_std:1,hazure_y_last:2,
+    replay:1,replay_green:2,replay_red:3,
+    bell:1,bell_green:2,bell_red:3,
     red:2,red_red:3,red_purple:4,
     green:2,green_red:3,green_purple:4,
     purple:ci===4?4:2,
@@ -248,13 +275,43 @@ function isNA(row,ci){return row.disabled&&row.disabled.includes(ci)}
 let state={counts:blankCounts(),history:[]};
 let points=defaultPoints();
 try{const p=JSON.parse(localStorage.getItem(PT_KEY));if(Array.isArray(p))p.forEach((o,ci)=>Object.assign(points[ci],o))}catch(e){}
+if(!state.misc)state.misc={games:"",bell:0,a:0,b:0,c:0,d:0};
 if(!Array.isArray(state.archives))state.archives=[];
 state.archives.forEach(g=>{if(g.date===undefined){const m=String(g.time||'').match(/^(\d+)\/(\d+)/);g.date=m?`${new Date().getFullYear()}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}`:''}if(g.store===undefined)g.store='';if(!g.id)g.id=newId()});
 function savePoints(){try{localStorage.setItem(PT_KEY,JSON.stringify(points))}catch(e){}}
+const CO_KEY="slotCharCounter.collapsed.v1";
+let collapsed={};
+try{const c=JSON.parse(localStorage.getItem(CO_KEY));if(c&&typeof c==='object')collapsed=c}catch(e){}
+function saveCollapsed(){try{localStorage.setItem(CO_KEY,JSON.stringify(collapsed))}catch(e){}}
 let mode=1;
 let past=[],future=[];
 
 try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.counts&&s.history)state=s}catch(e){}
+if(!state.mig2){
+  const mv=o=>{
+    if(o.taiou!==undefined){o.taiou_nolight=o.taiou;delete o.taiou}
+    ['replay','bell'].forEach(k=>{
+      const y=o[k+'_yellow'],g=o[k+'_green'];
+      if(y!==undefined||g!==undefined){o[k+'_green']=y||0;o[k+'_red']=g||0;delete o[k+'_yellow']}
+    });
+  };
+  state.counts.forEach(mv);
+  state.history.forEach(e=>mv(e.counts));
+  (state.archives||[]).forEach(g=>{g.counts.forEach(mv);g.history.forEach(e=>mv(e.counts))});
+  state.mig2=1;
+  try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
+}
+if(!state.mig3){
+  const mv3=o=>{
+    if(o.hazure_blue!==undefined){o.hazure_b_off=o.hazure_blue;delete o.hazure_blue}
+    if(o.hazure_yellow!==undefined){o.hazure_y_std=o.hazure_yellow;delete o.hazure_yellow}
+  };
+  state.counts.forEach(mv3);
+  state.history.forEach(e=>mv3(e.counts));
+  (state.archives||[]).forEach(g=>{g.counts.forEach(mv3);g.history.forEach(e=>mv3(e.counts))});
+  state.mig3=1;
+  try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
+}
 state.counts.forEach((c,ci)=>ROWS.forEach(r=>cellKeys(r,ci).forEach(k=>{if(typeof c[k]!=='number')c[k]=0})));
 if(!Array.isArray(state.archives))state.archives=[];
 state.archives.forEach(g=>{if(g.date===undefined){const m=String(g.time||'').match(/^(\d+)\/(\d+)/);g.date=m?`${new Date().getFullYear()}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}`:''}if(g.store===undefined)g.store='';if(!g.id)g.id=newId()});
@@ -270,13 +327,14 @@ const $=id=>document.getElementById(id);
 
 function buildGrid(){
   let h='<thead><tr><th class="corner" colspan="2" style="color:#fff">キャラ</th>';
-  CHARS.forEach((c,i)=>h+=`<th style="background:var(--c${i})">${c.name}<small>${c.sub}</small></th>`);
+  CHARS.forEach((c,i)=>h+=`<th style="background:var(--c${i})">${dsp(c)}<small>${c.sub}</small></th>`);
   h+='</tr></thead><tbody><tr class="ptrow"><th class="lab" colspan="2">推定pt<br>合計</th>';
   CHARS.forEach((c,ci)=>h+=`<td><span class="ptv" id="pt-${ci}">0</span></td>`);
   h+='</tr>';
   GROUPS.forEach(g=>{
+    h+=`<tr class="ghead" data-g="${g.gid}"><th colspan="${CHARS.length+2}"><span class="gar">▼</span>${g.name}</th></tr>`;
     g.rows.forEach((r,ri)=>{
-      h+='<tr>';
+      h+=`<tr class="grow g-${g.gid}">`;
       if(ri===0)h+=`<th class="grp" rowspan="${g.rows.length}">${g.name}</th>`;
       h+=`<th class="lab"${labStyle(r)}>${r.label}</th>`;
       CHARS.forEach((c,ci)=>{
@@ -284,11 +342,11 @@ function buildGrid(){
         const vs=variants(r,ci),nm=r.label.replace('<br>','');
         if(!vs){
           h+=`<td><span class="cnt" id="v-${ci}-${r.key}">0</span>
-            <button class="btn" data-c="${ci}" data-r="${r.key}" style="background:var(--c${ci})" aria-label="${c.name} ${nm}">＋</button></td>`;
+            <button class="btn" data-c="${ci}" data-r="${r.key}" style="background:var(--c${ci})" aria-label="${full(ci)} ${nm}">＋</button></td>`;
         }else{
           h+='<td>'+vs.map((id,vi)=>{const k=r.key+'_'+id;
             return `<div class="sub${vi?' gap':''}">${tag(id)}<span class="cnt" id="v-${ci}-${k}">0</span></div>
-            <button class="btn sm" data-c="${ci}" data-r="${k}" style="background:var(--c${ci})" aria-label="${c.name} ${nm} ${COLORS[id].l}">＋</button>`}).join('')+'</td>';
+            <button class="btn sm" data-c="${ci}" data-r="${k}" style="background:var(--c${ci})" aria-label="${full(ci)} ${nm} ${COLORS[id].l}">＋</button>`}).join('')+'</td>';
         }
       });
       h+='</tr>';
@@ -304,15 +362,24 @@ function render(){
   CHARS.forEach((c,ci)=>ROWS.forEach(r=>cellKeys(r,ci).forEach(k=>{
     const el=$(`v-${ci}-${k}`);if(el)el.textContent=state.counts[ci][k];
   })));
+  applyCollapse();
   CHARS.forEach((c,ci)=>$(`pt-${ci}`).textContent=fmt(calcPt(ci,state.counts[ci])));
   document.querySelectorAll('.btn').forEach(b=>b.textContent=mode>0?'＋':'－');
   $('mPlus').classList.toggle('on',mode>0);$('mMinus').classList.toggle('on',mode<0);
   $('mPlus').setAttribute('aria-pressed',mode>0);$('mMinus').setAttribute('aria-pressed',mode<0);
   document.body.classList.toggle('minus',mode<0);
   $('undo').disabled=!past.length;$('redo').disabled=!future.length;
-  renderHist();renderPast();
+  renderHist();renderPast();if(document.activeElement!==$('gamesIn'))renderMisc();
 }
 
+function applyCollapse(){
+  GROUPS.forEach(g=>{
+    const on=!!collapsed[g.gid];
+    document.querySelectorAll('.g-'+g.gid).forEach(tr=>tr.style.display=on?'none':'');
+    const hd=document.querySelector('.ghead[data-g="'+g.gid+'"]');
+    if(hd){hd.classList.toggle('closed',on);hd.querySelector('.gar').textContent=on?'▶':'▼'}
+  });
+}
 function renderHist(){
   const H=state.history;
   if(!H.length){$('histBox').innerHTML='<div class="empty">まだ当選履歴はありません。カウント後に「当選」を押すとここに記録されます。</div>';return}
@@ -324,7 +391,7 @@ function histTable(H,numbered,deletable){
   if(numbered){h+='<tr><th class="stk2" colspan="2"></th>';
   H.forEach((e,i)=>h+=`<th>${n-i}回目<div class="time">${e.time||''}</div></th>`);h+='</tr>';}
   h+='<tr><th class="stk2" colspan="2">キャラ</th>';
-  H.forEach(e=>h+=`<th class="who" style="background:var(--c${e.char})">${CHARS[e.char].name}</th>`);
+  H.forEach(e=>h+=`<th class="who" style="background:var(--c${e.char})">${dsp(CHARS[e.char])}</th>`);
   h+='</tr></thead><tbody><tr class="hpt"><th class="lab stk2" colspan="2">推定pt合計</th>';
   H.forEach(e=>h+=`<td>${e.pt??fmt(calcPt(e.char,e.counts))}</td>`);
   h+='</tr>';
@@ -356,6 +423,19 @@ function gameTitle(g){
   if(g.date){const [y,m,dd]=g.date.split('-');d=`${y}/${+m}/${+dd}`}
   return esc(d)+(g.store?`　${esc(g.store)}`:'');
 }
+const MISC=[{k:"bell",n:"共通ベル"},{k:"a",n:"自由カウント A"},{k:"b",n:"自由カウント B"},{k:"c",n:"自由カウント C"},{k:"d",n:"自由カウント D"}];
+function renderMisc(){
+  const m=state.misc;
+  let h=`<div class="mrow"><span class="mname">現在のゲーム数</span>
+    <input class="gin" id="gamesIn" type="text" inputmode="numeric" placeholder="0" value="${esc(m.games||'')}">
+    <button class="mrst" data-mrst="games">リセット</button></div>`;
+  h+=MISC.map(x=>`<div class="mrow"><span class="mname">${x.n}</span>
+    <button class="mbtn minus" data-mdec="${x.k}">－</button>
+    <span class="mval" id="mv-${x.k}">${m[x.k]||0}</span>
+    <button class="mbtn" data-minc="${x.k}">＋</button>
+    <button class="mrst" data-mrst="${x.k}">リセット</button></div>`).join('');
+  $('miscBox').innerHTML=h;
+}
 function renderPast(){
   const A=state.archives||[];
   $('clearPast').disabled=!A.length;
@@ -368,6 +448,7 @@ function renderPast(){
         <label>店名<input class="fin" type="text" data-gi="${i}" data-f="store" value="${esc(g.store||'')}" placeholder="店名を入力"></label>
       </div>
       <div class="ops" style="margin:6px 0"><button class="pill" data-expgame="${i}">このゲームをエクスポート</button></div>
+      ${g.misc?`<h3>その他カウンター</h3><div class="mtbl">${[['現在のゲーム数',g.misc.games||'-']].concat(MISC.map(x=>[x.n,g.misc[x.k]||0])).map(([n,v])=>`<div><span>${n}</span><b>${esc(String(v))}</b></div>`).join('')}</div>`:''}
       <h3>終了時のカウンター</h3>${histTable(fin,false,false)}
       <h3>CZ当選履歴</h3>${g.history.length?histTable(g.history,true,false):'<div class="empty">当選なし</div>'}
 </div></details>`;
@@ -376,7 +457,7 @@ function renderPast(){
 
 function buildPtGrid(){
   let h='<thead><tr><th class="corner" colspan="2" style="color:#fff">キャラ</th>';
-  CHARS.forEach((c,i)=>h+=`<th style="background:var(--c${i})">${c.name}<small>${c.sub}</small></th>`);
+  CHARS.forEach((c,i)=>h+=`<th style="background:var(--c${i})">${dsp(c)}<small>${c.sub}</small></th>`);
   h+='</tr></thead><tbody>';
   GROUPS.forEach(g=>{
     const rows=g.rows.filter(r=>!NO_PT.includes(r.key));
@@ -412,13 +493,16 @@ $('ptDefault').onclick=async()=>{
   if(!await ask('pt設定をすべて初期値に戻しますか？','戻す'))return;
   points=defaultPoints();savePoints();buildPtGrid();render();toast('初期値に戻しました');
 };
-function showTab(set){
-  $('viewCount').hidden=set;$('viewSet').hidden=!set;
-  $('tabCount').classList.toggle('on',!set);$('tabSet').classList.toggle('on',set);
+function showTab(name){
+  [['Count','viewCount'],['Hist','viewHist'],['Misc','viewMisc'],['Set','viewSet']].forEach(([t,v])=>{
+    $(v).hidden=(t!==name);$('tab'+t).classList.toggle('on',t===name);
+  });
   window.scrollTo(0,0);
 }
-$('tabCount').onclick=()=>showTab(false);
-$('tabSet').onclick=()=>showTab(true);
+$('tabCount').onclick=()=>showTab('Count');
+$('tabHist').onclick=()=>showTab('Hist');
+$('tabMisc').onclick=()=>showTab('Misc');
+$('tabSet').onclick=()=>showTab('Set');
 
 function ask(msg,ok='OK'){
   return new Promise(res=>{
@@ -431,6 +515,8 @@ let tt;function toast(m){const t=$('toast');t.textContent=m;t.classList.add('sho
 function nowStr(){const d=new Date();return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`}
 
 $('grid').addEventListener('click',async e=>{
+  const gh=e.target.closest('.ghead');
+  if(gh){const id=gh.dataset.g;collapsed[id]=!collapsed[id];saveCollapsed();applyCollapse();return}
   const b=e.target.closest('.btn');
   if(b){
     const ci=+b.dataset.c,k=b.dataset.r;
@@ -443,12 +529,12 @@ $('grid').addEventListener('click',async e=>{
   const w=e.target.closest('.win');
   if(w){
     const ci=+w.dataset.win;
-    if(!await ask(`${CHARS[ci].name}のCZ当選を記録して、${CHARS[ci].name}のカウントを0に戻しますか？`,'記録する'))return;
+    if(!await ask(`${full(ci)}のCZ当選を記録して、カウントを0に戻しますか？`,'記録する'))return;
     commit(()=>{
       state.history.unshift({char:ci,counts:{...state.counts[ci]},pt:fmt(calcPt(ci,state.counts[ci])),time:nowStr()});
       state.counts[ci]=blankChar(ci);
     });
-    toast(`${CHARS[ci].name}の当選を記録しました`);
+    toast(`${full(ci)}の当選を記録しました`);
   }
 });
 $('histBox').addEventListener('click',async e=>{
@@ -463,11 +549,11 @@ $('undo').onclick=()=>{if(!past.length)return;future.push(snap());state=JSON.par
 $('redo').onclick=()=>{if(!future.length)return;past.push(snap());state=JSON.parse(future.pop());save();render();toast('1つ進めました')};
 $('reset').onclick=async()=>{if(!await ask('全キャラのカウントを0にしますか？（履歴は残ります）','リセット'))return;commit(()=>state.counts=blankCounts());toast('カウントをリセットしました')};
 $('newGame').onclick=async()=>{
-  const empty=!state.history.length&&state.counts.every(c=>Object.values(c).every(v=>!v));
+  const empty=!state.history.length&&state.counts.every(c=>Object.values(c).every(v=>!v))&&!state.misc.games&&MISC.every(x=>!state.misc[x.k]);
   if(!await ask(empty?'新しいゲームを開始しますか？（記録がないため保存はされません）':'今のカウンターと当選履歴を「過去のゲーム」に保存して、すべて0から新しいゲームを開始しますか？','開始する'))return;
   commit(()=>{
-    if(!empty)state.archives.unshift({id:newId(),time:nowStr(),date:isoToday(),store:'',counts:state.counts,pts:state.counts.map((c,ci)=>fmt(calcPt(ci,c))),history:state.history});
-    state.counts=blankCounts();state.history=[];
+    if(!empty)state.archives.unshift({id:newId(),time:nowStr(),date:isoToday(),store:'',misc:{...state.misc},counts:state.counts,pts:state.counts.map((c,ci)=>fmt(calcPt(ci,c))),history:state.history});
+    state.counts=blankCounts();state.history=[];state.misc={games:"",bell:0,a:0,b:0,c:0,d:0};
   });
   toast(empty?'新しいゲームを開始しました':'過去のゲームに保存しました');
 };
@@ -531,6 +617,22 @@ $('impFile').onchange=async e=>{
   });
   toast(add.length===1?'追加しました':`${add.length}件を追加しました`);
 };
+$('miscBox').addEventListener('click',async e=>{
+  const inc=e.target.closest('[data-minc]'),dec=e.target.closest('[data-mdec]'),rst=e.target.closest('[data-mrst]');
+  if(inc)return commit(()=>state.misc[inc.dataset.minc]=(state.misc[inc.dataset.minc]||0)+1);
+  if(dec){const k=dec.dataset.mdec;if(!state.misc[k])return toast('0より下にはできません');return commit(()=>state.misc[k]--)}
+  if(rst){
+    const k=rst.dataset.mrst;
+    const name=k==='games'?'現在のゲーム数':(MISC.find(x=>x.k===k)||{}).n;
+    if(!await ask(`「${name}」を0に戻しますか？`,'リセット'))return;
+    commit(()=>state.misc[k]=k==='games'?'':0);toast('リセットしました');
+  }
+});
+$('miscBox').addEventListener('input',e=>{
+  const t=e.target.closest('#gamesIn');if(!t)return;
+  t.value=t.value.replace(/[^0-9]/g,'');
+  state.misc.games=t.value;save();
+});
 $('clearPast').onclick=async()=>{if(!state.archives.length)return;if(!await ask('過去のゲームをすべて削除しますか？','削除する'))return;commit(()=>state.archives=[]);toast('削除しました')};
 function showSub(past){
   $('paneSet').hidden=past;$('panePast').hidden=!past;
