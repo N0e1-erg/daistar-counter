@@ -104,6 +104,15 @@ table{border-collapse:collapse;width:100%;table-layout:fixed}
 .ghead th{background:var(--head);color:#fff;font-size:13px;font-weight:700;text-align:left;padding:8px 10px;border:1px solid var(--line)}
 .ghead.closed th{background:#5c6068}
 .gar{display:inline-block;width:16px;font-size:10px}
+.flrow td{padding-top:16px}
+.flrow .lab{padding-top:16px}
+.fl{display:block;width:100%;height:30px;border:2px solid var(--line);border-radius:6px;background:var(--cell);color:var(--sub);font-size:12px;font-weight:700}
+.fl+.fl{margin-top:4px}
+.fl.on.ok{background:#2e8b3d;border-color:#2e8b3d;color:#fff}
+.fl.on.ng{background:#c2362b;border-color:#c2362b;color:#fff}
+.hist .res{font-size:12px;font-weight:800;background:var(--cell);color:var(--sub)}
+.hist .res.ok{background:#2e8b3d;color:#fff}
+.hist .res.ng{background:#c2362b;color:#fff}
 .na{background:var(--disabled);text-align:center;color:var(--sub);font-size:22px}
 .win{width:100%;height:38px;border:2px solid var(--danger);background:var(--cell);color:var(--danger);border-radius:7px;font-weight:800;font-size:13px}
 .win:active{background:var(--danger);color:#fff}
@@ -156,9 +165,11 @@ table{border-collapse:collapse;width:100%;table-layout:fixed}
     <button id="mMinus" aria-pressed="false">－</button>
   </div>
   <table class="grid" id="grid"></table>
-  <div class="ops">
+  <div class="ops" style="margin-top:28px">
     <button class="pill" id="undo">戻す</button>
     <button class="pill" id="redo">進む</button>
+  </div>
+  <div class="ops" style="margin-top:10px">
     <button class="pill" id="reset">有利切れ(全リセット)</button>
   </div>
 
@@ -275,6 +286,7 @@ function isNA(row,ci){return row.disabled&&row.disabled.includes(ci)}
 let state={counts:blankCounts(),history:[]};
 let points=defaultPoints();
 try{const p=JSON.parse(localStorage.getItem(PT_KEY));if(Array.isArray(p))p.forEach((o,ci)=>Object.assign(points[ci],o))}catch(e){}
+if(!Array.isArray(state.flags))state.flags=CHARS.map(()=>null);
 if(!state.misc)state.misc={games:"",bell:0,a:0,b:0,c:0,d:0};
 if(!Array.isArray(state.archives))state.archives=[];
 state.archives.forEach(g=>{if(g.date===undefined){const m=String(g.time||'').match(/^(\d+)\/(\d+)/);g.date=m?`${new Date().getFullYear()}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}`:''}if(g.store===undefined)g.store='';if(!g.id)g.id=newId()});
@@ -352,7 +364,9 @@ function buildGrid(){
       h+='</tr>';
     });
   });
-  h+='<tr><th class="lab" colspan="2">CZ当選</th>';
+  h+='<tr class="flrow"><th class="lab" colspan="2">CZ成否</th>';
+  CHARS.forEach((c,ci)=>h+=`<td><button class="fl ok" data-fl="${ci}" data-v="ok">成功</button><button class="fl ng" data-fl="${ci}" data-v="ng">失敗</button></td>`);
+  h+='</tr><tr><th class="lab" colspan="2">CZ当選</th>';
   CHARS.forEach((c,ci)=>h+=`<td><button class="win" data-win="${ci}">当選</button></td>`);
   h+='</tr></tbody>';
   $('grid').innerHTML=h;
@@ -362,6 +376,7 @@ function render(){
   CHARS.forEach((c,ci)=>ROWS.forEach(r=>cellKeys(r,ci).forEach(k=>{
     const el=$(`v-${ci}-${k}`);if(el)el.textContent=state.counts[ci][k];
   })));
+  CHARS.forEach((c,ci)=>document.querySelectorAll(`.fl[data-fl="${ci}"]`).forEach(b=>b.classList.toggle('on',state.flags[ci]===b.dataset.v)));
   applyCollapse();
   CHARS.forEach((c,ci)=>$(`pt-${ci}`).textContent=fmt(calcPt(ci,state.counts[ci])));
   document.querySelectorAll('.btn').forEach(b=>b.textContent=mode>0?'＋':'－');
@@ -392,6 +407,8 @@ function histTable(H,numbered,deletable){
   H.forEach((e,i)=>h+=`<th>${n-i}回目<div class="time">${e.time||''}</div></th>`);h+='</tr>';}
   h+='<tr><th class="stk2" colspan="2">キャラ</th>';
   H.forEach(e=>h+=`<th class="who" style="background:var(--c${e.char})">${dsp(CHARS[e.char])}</th>`);
+  h+='</tr><tr><th class="stk2" colspan="2">CZ結果</th>';
+  H.forEach(e=>h+=`<th class="res ${e.result||''}">${e.result==='ok'?'成功':e.result==='ng'?'失敗':'-'}</th>`);
   h+='</tr></thead><tbody><tr class="hpt"><th class="lab stk2" colspan="2">推定pt合計</th>';
   H.forEach(e=>h+=`<td>${e.pt??fmt(calcPt(e.char,e.counts))}</td>`);
   h+='</tr>';
@@ -526,13 +543,16 @@ $('grid').addEventListener('click',async e=>{
     const v=$(`v-${ci}-${k}`);v.classList.remove('flash');void v.offsetWidth;v.classList.add('flash');
     return;
   }
+  const f=e.target.closest('.fl');
+  if(f){const ci=+f.dataset.fl;state.flags[ci]=state.flags[ci]===f.dataset.v?null:f.dataset.v;save();render();return}
   const w=e.target.closest('.win');
   if(w){
     const ci=+w.dataset.win;
+    if(!state.flags[ci]){toast('先に「成功」か「失敗」を選んでください');return}
     if(!await ask(`${full(ci)}のCZ当選を記録して、カウントを0に戻しますか？`,'記録する'))return;
     commit(()=>{
-      state.history.unshift({char:ci,counts:{...state.counts[ci]},pt:fmt(calcPt(ci,state.counts[ci])),time:nowStr()});
-      state.counts[ci]=blankChar(ci);
+      state.history.unshift({char:ci,result:state.flags[ci],counts:{...state.counts[ci]},pt:fmt(calcPt(ci,state.counts[ci])),time:nowStr()});
+      state.counts[ci]=blankChar(ci);state.flags[ci]=null;
     });
     toast(`${full(ci)}の当選を記録しました`);
   }
@@ -553,7 +573,7 @@ $('newGame').onclick=async()=>{
   if(!await ask(empty?'新しいゲームを開始しますか？（記録がないため保存はされません）':'今のカウンターと当選履歴を「過去のゲーム」に保存して、すべて0から新しいゲームを開始しますか？','開始する'))return;
   commit(()=>{
     if(!empty)state.archives.unshift({id:newId(),time:nowStr(),date:isoToday(),store:'',misc:{...state.misc},counts:state.counts,pts:state.counts.map((c,ci)=>fmt(calcPt(ci,c))),history:state.history});
-    state.counts=blankCounts();state.history=[];state.misc={games:"",bell:0,a:0,b:0,c:0,d:0};
+    state.counts=blankCounts();state.history=[];state.flags=CHARS.map(()=>null);state.misc={games:"",bell:0,a:0,b:0,c:0,d:0};
   });
   toast(empty?'新しいゲームを開始しました':'過去のゲームに保存しました');
 };
