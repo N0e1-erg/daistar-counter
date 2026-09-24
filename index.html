@@ -642,6 +642,15 @@ $('subPt').onclick=()=>showSub(false);
 $('subPast').onclick=()=>showSub(true);
 
 buildGrid();buildPtGrid();render();
+
+// オフライン対応 & 自動更新（GitHub Pages などに置いたときだけ動作）
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+  let reloading=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(reloading)return;reloading=true;location.reload();
+  });
+}
 </script>
 </body>
 </html>
