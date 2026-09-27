@@ -70,7 +70,9 @@ table{border-collapse:collapse;width:100%;table-layout:fixed}
 .mrow .gin:focus{outline:none;border-color:var(--accent)}
 .tabs button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .carryrow td{background:#fffbea;text-align:center;padding:2px}
-.carryrow .cav{display:block;font-size:14px;font-weight:800;color:#a8751a;font-variant-numeric:tabular-nums}
+.cain{width:100%;height:28px;border:1.5px solid #e2c98f;border-radius:6px;background:var(--cell);color:#a8751a;text-align:center;
+  font-size:16px;font-weight:800;-webkit-user-select:text;user-select:text;font-family:inherit;padding:0 2px;font-variant-numeric:tabular-nums}
+.cain:focus{outline:none;border-color:var(--accent)}
 .carryrow .lab{background:#a8751a;font-size:11px}
 .winin{width:100%;height:34px;border:2px solid var(--line);border-radius:7px;background:var(--cell);color:var(--ink);text-align:center;
   font-size:16px;font-weight:800;-webkit-user-select:text;user-select:text;font-family:inherit;padding:0 2px}
@@ -384,7 +386,7 @@ function buildGrid(){
   h+='</tr></thead><tbody><tr class="ptrow"><th class="lab" colspan="2">推定pt<br>合計</th>';
   CHARS.forEach((c,ci)=>h+=`<td><span class="ptv" id="pt-${ci}">0</span></td>`);
   h+='</tr><tr class="carryrow"><th class="lab" colspan="2">推定引継pt</th>';
-  CHARS.forEach((c,ci)=>h+=`<td><span class="cav" id="ca-${ci}">0</span></td>`);
+  CHARS.forEach((c,ci)=>h+=`<td><input class="cain" id="ca-${ci}" data-ca="${ci}" type="text" inputmode="decimal" value="0"></td>`);
   h+='</tr>';
   GROUPS.forEach(g=>{
     if(!g.nofold)h+=`<tr class="ghead" data-g="${g.gid}"><th colspan="${CHARS.length+2}"><span class="gar">▼</span>${g.name}</th></tr>`;
@@ -423,7 +425,7 @@ function render(){
   applyCollapse();refreshLu();
   CHARS.forEach((c,ci)=>{
     $(`pt-${ci}`).textContent=fmt(totalPt(ci));
-    $(`ca-${ci}`).textContent=fmt(state.carry[ci]||0);
+    const ca=$(`ca-${ci}`);if(document.activeElement!==ca)ca.value=fmt(state.carry[ci]||0);
     const wi=document.querySelector(`.winin[data-wi="${ci}"]`);
     if(wi&&document.activeElement!==wi)wi.value=state.winPt[ci]||'';
   });
@@ -650,7 +652,22 @@ function ask(msg,ok='OK'){
 let tt;function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1400)}
 function nowStr(){const d=new Date();return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`}
 
+let caPre=null;
+$('grid').addEventListener('focusin',e=>{const t=e.target.closest('.cain');if(t){caPre=snap();setTimeout(()=>t.select(),0)}});
+$('grid').addEventListener('focusout',e=>{
+  const t=e.target.closest('.cain');if(!t)return;
+  if(caPre&&caPre!==snap()){past.push(caPre);if(past.length>200)past.shift();future=[]}
+  caPre=null;render();
+});
 $('grid').addEventListener('input',e=>{
+  const c=e.target.closest('.cain');
+  if(c){
+    c.value=c.value.replace(/[^0-9.]/g,'');
+    const v=parseFloat(c.value);
+    state.carry[+c.dataset.ca]=isFinite(v)?v:0;save();
+    $(`pt-${c.dataset.ca}`).textContent=fmt(totalPt(+c.dataset.ca));
+    return;
+  }
   const t=e.target.closest('.winin');if(!t)return;
   t.value=t.value.replace(/[^0-9.]/g,'');
   state.winPt[+t.dataset.wi]=t.value;save();
