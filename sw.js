@@ -1,9 +1,9 @@
 // ワールドダイスター キャラ別カウンター - オフライン & 自動更新用
-const CACHE = 'daistar-counter-v1';
+const CACHE = 'daistar-counter-v2';
 
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(['./', './index.html'])).catch(() => {})
+    caches.open(CACHE).then(c => c.addAll(['./', './index.html', './daistar-counter.html'])).catch(() => {})
   );
   self.skipWaiting();
 });
@@ -31,7 +31,7 @@ self.addEventListener('fetch', e => {
           caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
           return res;
         })
-        .catch(() => caches.match(req).then(r => r || caches.match('./index.html')))
+        .catch(() => caches.match(req).then(r => r || caches.match('./daistar-counter.html')))
     );
     return;
   }
